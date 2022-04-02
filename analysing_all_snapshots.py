@@ -6,22 +6,20 @@ import os
 import sys
 from procedure import *
 
-save_datapath="/mnt/home/bbhattarai/resonance_sweeping/New_Sims_Analysis/"
-plotpath="/mnt/home/bbhattarai/resonance_sweeping/New_Sims_Analysis/plots/"
-#local_datapath="./resonance_sweeping/localdata/"
+datapath="/work2/07428/binod/stampede2/LRBB-IoMW/"
+plotpath="/home1/07428/binod/work2/resonance_sweeping_low_res_sims/plots/"
 
 #data={}
 ######
 ######
 #This part of the code captures number from the sbatch script to run things parallel
-argdex = int(sys.argv[1])
-start  = int(argdex*90)-90
-finish = int(argdex*90)
+#argdex = int(sys.argv[1])
+#start  = int(argdex*90)-90
+#finish = int(argdex*90)
 
-#start=336
-#finish=337
+start=200
+finish=510
 #total 337 snapshots starting from 0 to 336
-a=list()
 for i in range(start,finish):
     snapshot=i
     snaparr = loadwholesnap(path,snapshot)
@@ -44,15 +42,8 @@ for i in range(start,finish):
     #converting phi to degrees
     phi=np.rad2deg(phi)
     
-    #calculating bar_angle
-    discindx=(mass<1e-7*2.324876e9)
-    barsample=(r<3)*discindx
-    counts, bins, patches=plt.hist(phi[barsample],bins=360,histtype='step')
-    bin_centres=bins[:-1]+(bins[1]-bins[0])/2
-    max_indx=np.argmax(counts)
-    barangle_degrees=bin_centres[max_indx]
-    a.append(barangle_degrees)
     
+        
     if ((i % 5)==0):
         # we always want the bar to be at 25 degrees from the observer
         rotation_angle=25-barangle_degrees
@@ -79,7 +70,7 @@ for i in range(start,finish):
         cbar_ax.set_ylabel(r'n$_{star}$')
         cbar_ax.yaxis.label.set_size(10)
         plotname=str(snapshot)+"_v_phi_vs_r_hexbin_rotated.jpg"
-        plotpath2="/mnt/home/bbhattarai/resonance_sweeping/New_Sims_Analysis/plots/v_phi_vs_r/"
+        plotpath2=plotpath+"v_phi_vs_r/"
 
         fig2.savefig(plotpath2+plotname,bbox_inches="tight")
         print("Plot generated and saved to file: ",plotname)
@@ -98,7 +89,7 @@ for i in range(start,finish):
         cbar_ax.set_ylabel(r'n$_{star}$')
         cbar_ax.yaxis.label.set_size(10)
         plotname=str(snapshot)+"x_rot_vs_y_rot_all.jpg"
-        plotpath3="/mnt/home/bbhattarai/resonance_sweeping/New_Sims_Analysis/plots/y_vs_x_rotated/"
+        plotpath3=plotpath+"y_vs_x_rotated/"
 
         fig3.savefig(plotpath3+plotname,bbox_inches="tight")
         print("Plot generated and saved to file: ",plotname)
@@ -147,10 +138,3 @@ for i in range(start,finish):
         fig5.savefig(plotpath5+plotname,bbox_inches="tight")
         print("Plot generated and saved to file: ",plotname)
         
-        #with open(local_datapath+filename, 'wb') as output:
-        #  pickle.dump(data, output)
-
-datafilename=str(start)+"_to_"+str(finish)+"_B3-N_saved_barangles.ang"
-bangle=np.array(a)
-with open(save_datapath+datafilename, 'wb') as output:
-        pickle.dump(bangle, output)
