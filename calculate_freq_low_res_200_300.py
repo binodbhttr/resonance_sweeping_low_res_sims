@@ -13,13 +13,16 @@ from scipy import stats as stats
 import scipy 
 
 datapath="/work2/07428/binod/stampede2/LRBB-IoMW/"
-savepath="/work2/07428/binod/stampede2/resonance_sweeping_low_res_sims/actions_freqs/"
+savepath_actions="/work2/07428/binod/stampede2/resonance_sweeping_low_res_sims/actions_angles_freqs/actions/"
+savepath_angles="/work2/07428/binod/stampede2/resonance_sweeping_low_res_sims/actions_angles_freqs/angles/"
+savepath_freqs="/work2/07428/binod/stampede2/resonance_sweeping_low_res_sims/actions_angles_freqs/freqs/"
+
 times=np.genfromtxt(datapath+'times.txt',dtype='str')
 ncores=8
 print(len(times),'snapshots on',ncores,'cores')
 
 start=200
-end=300
+end=290
 
 
 def loader(filename):
@@ -51,8 +54,6 @@ def loader(filename):
         cats['tform'][i] = tform
         cats['ID'][i] = IDs
     return(catd,cats,t)
-
-
 
 
 for i in range(start,end,10):
